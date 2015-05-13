@@ -297,6 +297,10 @@ void object_class::traverse() {
 	set_type(expr->get_type());
 }
 
+void no_expr_class::traverse() {
+	set_type(No_type);
+}
+
 /*   This is the entry point to the semantic checker.
 
      Your checker should do the following two things:
