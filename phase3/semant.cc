@@ -262,13 +262,9 @@ void attr_class::traverse() {
 	if (name != idtable.add_string("i"))
 		return;
 	init->traverse();
-	cout << name << endl;
+	//cout << name << endl;
 	if (init->get_type() != No_type && init->get_type() != type_decl) {
-		classtable->semant_error() << "attribute " << name << " has type ";
-		type_decl->print(classtable->semant_error());
-		classtable->semant_error() << " while, the expression has type ";
-		init->get_type()->print(classtable->semant_error());
-		classtable->semant_error() << std::endl;
+		classtable->semant_error() << "attribute " << name << " has type " << type_decl->get_string() << " while, the expression has type " << init->get_type()->get_string() << std::endl;
 	}
 }
 
@@ -278,6 +274,14 @@ void method_class::traverse() {
 
 void int_const_class::traverse() {
 	set_type(Int);
+}
+
+void bool_const_class::traverse() {
+	set_type(Bool);
+}
+
+void string_const_class::traverse() {
+	set_type(Str);
 }
 
 /*   This is the entry point to the semantic checker.
