@@ -13,6 +13,8 @@ extern char *curr_filename;
 
 SymbolTable<Symbol, tree_node> globalSymbolTable;
 
+ClassTable *classtable;
+
 //////////////////////////////////////////////////////////////////////
 //
 // Symbols
@@ -85,7 +87,7 @@ static void initialize_constants(void)
 }
 
 
-ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) {
+ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cout) {
 
     /* Fill this in */
 	allClasses = classes;
@@ -254,8 +256,14 @@ void class__class::traverse() {
 
 void attr_class::traverse() {
 	init->traverse();
-	//if (init->get_type != No_type && init->get_type() != type_decl)
-	//	std::cout << "attribute " << name << " has type " << type_decl->get_string() << " while, the expression has type " << init->type->get_string() << std::endl;
+	cout << name << endl;
+	//if (init->get_type() != type_decl) {
+		//classtable->semant_error() << "attribute " << name << " has type ";
+		//type_decl->print(classtable->semant_error());
+		//classtable->semant_error() << " while, the expression has type ";
+		//init->get_type()->print(classtable->semant_error());
+		//classtable->semant_error() << std::endl;
+	//}
 }
 
 void method_class::traverse() {
@@ -284,7 +292,7 @@ void program_class::semant()
     initialize_constants();
 
     /* ClassTable constructor may do some semantic analysis */
-    ClassTable *classtable = new ClassTable(classes);
+    classtable = new ClassTable(classes);
 
     /* some semantic analysis code may go here */
     classtable->traverse();
