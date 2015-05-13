@@ -226,7 +226,16 @@ ostream& ClassTable::semant_error()
 {                                                 
     semant_errors++;                            
     return error_stream;
-} 
+}
+
+
+void ClassTable::traverse() {
+	for (i = allClasses->first; allClasses->more(i); allClasses->next(i)) {
+		// Enter scope
+		allClasses->nth(i)->traverse();	// i.e, for checking whatever it needs to check
+		// Exit scope
+	}
+}
 
 
 
@@ -251,7 +260,7 @@ void program_class::semant()
     ClassTable *classtable = new ClassTable(classes);
 
     /* some semantic analysis code may go here */
-	classtable.traverse();
+	classtable->traverse();
 
     if (classtable->errors()) {
 	cerr << "Compilation halted due to static semantic errors." << endl;
