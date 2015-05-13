@@ -284,6 +284,19 @@ void string_const_class::traverse() {
 	set_type(Str);
 }
 
+// NOT TESTED YET!
+void object_class::traverse() {
+	tree_node *v = globalSymbolTable.lookup(name);
+	if (v == NULL) {
+		classtable->semant_error() << name << " is undefined." << endl;		return;
+	}
+	Expression_class *expr = dynamic_cast<Expression_class*>(v);
+	if (expr == NULL) {
+		classtable->semant_error() << name << " is NOT an expression." << endl;		return;
+	}
+	set_type(expr->get_type());
+}
+
 /*   This is the entry point to the semantic checker.
 
      Your checker should do the following two things:
