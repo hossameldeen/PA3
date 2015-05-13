@@ -35,6 +35,7 @@ class Class__class : public tree_node {
 public:
    tree_node *copy()		 { return copy_Class_(); }
    virtual Class_ copy_Class_() = 0;
+   virtual Symbol getName() = 0;
    virtual void traverse() = 0;
 
 #ifdef Class__EXTRAS
@@ -50,7 +51,7 @@ class Feature_class : public tree_node {
 public:
    tree_node *copy()		 { return copy_Feature(); }
    virtual Feature copy_Feature() = 0;
-   virtual getName() = 0;
+   virtual Symbol getName() = 0;
    virtual void traverse() = 0;
 
 #ifdef Feature_EXTRAS
@@ -165,6 +166,7 @@ public:
    }
    Class_ copy_Class_();
    void dump(ostream& stream, int n);
+   virtual Symbol getName() {return name;}
    virtual void traverse();
 
 #ifdef Class__SHARED_EXTRAS
@@ -192,7 +194,7 @@ public:
    }
    Feature copy_Feature();
    void dump(ostream& stream, int n);
-   virtual getName() {return name;}
+   virtual Symbol getName() {return name;}
    virtual void traverse();
 
 #ifdef Feature_SHARED_EXTRAS
@@ -218,7 +220,7 @@ public:
    }
    Feature copy_Feature();
    void dump(ostream& stream, int n);
-   virtual getName() {return name;}
+   virtual Symbol getName() {return name;}
    virtual void traverse();
 
 #ifdef Feature_SHARED_EXTRAS
@@ -288,7 +290,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -315,7 +317,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -340,7 +342,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -365,7 +367,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -388,7 +390,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -411,7 +413,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -432,7 +434,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -459,7 +461,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -482,7 +484,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -505,7 +507,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -528,7 +530,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -551,7 +553,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -572,7 +574,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -595,7 +597,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -618,7 +620,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -641,7 +643,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -662,7 +664,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -704,7 +706,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -725,7 +727,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -746,7 +748,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -767,7 +769,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -786,7 +788,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -807,7 +809,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse();
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS

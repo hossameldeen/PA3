@@ -5,6 +5,7 @@
 #include <stdarg.h>
 #include "semant.h"
 #include "utilities.h"
+#include "symtab.h"
 
 
 extern int semant_debug;
@@ -82,7 +83,6 @@ static void initialize_constants(void)
     type_name   = idtable.add_string("type_name");
     val         = idtable.add_string("_val");
 }
-
 
 
 ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) {
@@ -228,12 +228,13 @@ ostream& ClassTable::semant_error()
 {                                                 
     semant_errors++;                            
     return error_stream;
-} 
+}
+ 
 
 void ClassTable::traverse() {
 	globalSymbolTable.enterscope();
 	for (int i = allClasses->first(); allClasses->more(i); i = allClasses->next(i))
-		globalSymbolTable.addid(allClasses->nth(i)->name, allClasses->nth(i));
+		globalSymbolTable.addid(allClasses->nth(i)->getName(), allClasses->nth(i));
 
 	for (int i = allClasses->first(); allClasses->more(i); i = allClasses->next(i))
 		allClasses->nth(i)->traverse();
@@ -248,14 +249,13 @@ void class__class::traverse() {
 	
 	for (int i = features->first(); features->more(i); i = features->next(i))
 		features->nth(i)->traverse();
-	
 	globalSymbolTable.exitscope();
 }
 
 void attr_class::traverse() {
 	init->traverse();
-	if (init->get_type != No_type && init->get_type() != type_decl)
-		std::cout << "attribute " << name << " has type " << type_decl->get_string() << " while, the expression has type " << init->type->get_string() << std::endl;
+	//if (init->get_type != No_type && init->get_type() != type_decl)
+	//	std::cout << "attribute " << name << " has type " << type_decl->get_string() << " while, the expression has type " << init->type->get_string() << std::endl;
 }
 
 void method_class::traverse() {
@@ -264,10 +264,6 @@ void method_class::traverse() {
 
 void int_const_class::traverse() {
 	set_type(Int);
-}
-
-void no_expr_class::traverse() {
-	set_type(No_type);
 }
 
 /*   This is the entry point to the semantic checker.
@@ -291,7 +287,7 @@ void program_class::semant()
     ClassTable *classtable = new ClassTable(classes);
 
     /* some semantic analysis code may go here */
-	classtable->traverse();
+    classtable->traverse();
 
     if (classtable->errors()) {
 	cerr << "Compilation halted due to static semantic errors." << endl;
