@@ -24,6 +24,7 @@ private:
   int semant_errors;
   void install_basic_classes();
   ostream& error_stream;
+  Classes allClasses;
 
 public:
   ClassTable(Classes);
@@ -31,6 +32,7 @@ public:
   ostream& semant_error();
   ostream& semant_error(Class_ c);
   ostream& semant_error(Symbol filename, tree_node *t);
+  void traverse();
 };
 
 

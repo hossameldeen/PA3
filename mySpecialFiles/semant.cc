@@ -85,7 +85,8 @@ static void initialize_constants(void)
 
 ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) {
 
-    /* Fill this in */
+    allClasses = classes;
+	install_basic_classes();
 
 }
 
@@ -122,6 +123,7 @@ void ClassTable::install_basic_classes() {
 					       single_Features(method(type_name, nil_Formals(), Str, no_expr()))),
 			       single_Features(method(copy, nil_Formals(), SELF_TYPE, no_expr()))),
 	       filename);
+	allClasses = append_Classes(allClasses, single_Classes(Object_class));
 
     // 
     // The IO class inherits from Object. Its methods are
@@ -143,6 +145,7 @@ void ClassTable::install_basic_classes() {
 					       single_Features(method(in_string, nil_Formals(), Str, no_expr()))),
 			       single_Features(method(in_int, nil_Formals(), Int, no_expr()))),
 	       filename);  
+	allClasses = append_Classes(allClasses, single_Classes(IO_class));
 
     //
     // The Int class has no methods and only a single attribute, the
@@ -153,12 +156,14 @@ void ClassTable::install_basic_classes() {
 	       Object,
 	       single_Features(attr(val, prim_slot, no_expr())),
 	       filename);
+	allClasses = append_Classes(allClasses, single_Classes(Int_class));
 
     //
     // Bool also has only the "val" slot.
     //
     Class_ Bool_class =
 	class_(Bool, Object, single_Features(attr(val, prim_slot, no_expr())),filename);
+	allClasses = append_Classes(allClasses, single_Classes(Bool_class));
 
     //
     // The class Str has a number of slots and operations:
@@ -188,6 +193,7 @@ void ClassTable::install_basic_classes() {
 						      Str, 
 						      no_expr()))),
 	       filename);
+	allClasses = append_Classes(allClasses, single_Classes(Str_class));
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -245,6 +251,7 @@ void program_class::semant()
     ClassTable *classtable = new ClassTable(classes);
 
     /* some semantic analysis code may go here */
+	classtable.traverse();
 
     if (classtable->errors()) {
 	cerr << "Compilation halted due to static semantic errors." << endl;
