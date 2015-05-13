@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <vector>
 #include "semant.h"
 #include "utilities.h"
 #include "symtab.h"
@@ -250,8 +251,13 @@ void ClassTable::traverse() {
 
 void class__class::traverse() {
 	globalSymbolTable.enterscope();
-	for (int i = features->first(); features->more(i); i = features->next(i))
-		globalSymbolTable.addid(features->nth(i)->getName(), features->nth(i));
+	for (int i = features->first(); features->more(i); i = features->next(i)) {
+		tree_node *v = globalSymbolTable.lookup(features->nth(i)->getName());
+		if (v == NULL)
+			globalSymbolTable.addid(features->nth(i)->getName(), features->nth(i));
+		else
+			classtable->semant_error() << features->nth(i)->getName() << " has already been defined. But you're redefining it here." << std::endl;
+	}
 	
 	for (int i = features->first(); features->more(i); i = features->next(i))
 		features->nth(i)->traverse();
@@ -262,6 +268,7 @@ void attr_class::traverse() {
 	if (name != idtable.add_string("i"))
 		return;
 	init->traverse();
+	tree_node *v = globalSymbolTable.lookup(name);
 	//cout << name << endl;
 	if (init->get_type() != No_type && init->get_type() != type_decl) {
 		classtable->semant_error() << "attribute " << name << " has type " << type_decl->get_string() << " while, the expression has type " << init->get_type()->get_string() << std::endl;

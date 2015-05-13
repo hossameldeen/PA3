@@ -7,4 +7,5 @@ Do NOT forget to check for double definition. i.e., if something has been define
 
 
 Will write here last commit's changes:
-- Assign class.
+- Added checking for declaring something twice. Of course, untested.
+- 
