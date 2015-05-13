@@ -7,4 +7,4 @@ Do NOT forget to check for double definition. i.e., if something has been define
 
 
 Will write here last commit's changes:
-- Implemented no_expr_class::traverse().
+- Assign class.

@@ -222,6 +222,7 @@ public:
    void dump(ostream& stream, int n);
    virtual Symbol getName() {return name;}
    virtual void traverse();
+   virtual Symbol get_type() {return type_decl;}
 
 #ifdef Feature_SHARED_EXTRAS
    Feature_SHARED_EXTRAS
@@ -290,7 +291,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse() {}
+   virtual void traverse();
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS

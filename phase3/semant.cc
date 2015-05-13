@@ -272,6 +272,21 @@ void method_class::traverse() {
 	// NOT COMPLETED!
 }
 
+void assign_class::traverse() {
+	tree_node *v = globalSymbolTable.lookup(name);
+	if (v == NULL) {
+		classtable->semant_error() << name << " is undefined." << endl;		return;
+	}
+	attr_class *theObject = dynamic_cast<attr_class*>(v);
+	if (theObject == NULL) {
+		classtable->semant_error() << name << " is NOT an object." << endl;		return;
+	}
+	if (expr->get_type() != theObject->get_type()) {
+		classtable->semant_error() << theObject->getName() << " has type " << theObject->get_type()->get_string() << " while the expression assigned has type " << expr->get_type()->get_string() << endl;		return;
+	}
+	set_type(expr->get_type());
+}
+
 void int_const_class::traverse() {
 	set_type(Int);
 }
