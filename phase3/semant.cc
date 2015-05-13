@@ -248,6 +248,26 @@ void class__class::traverse() {
 	
 	for (int i = features->first(); features->more(i); i = features->next(i))
 		features->nth(i)->traverse();
+	
+	globalSymbolTable.exitscope();
+}
+
+void attr_class::traverse() {
+	init->traverse();
+	if (init->get_type != No_type && init->get_type() != type_decl)
+		std::cout << "attribute " << name << " has type " << type_decl->get_string() << " while, the expression has type " << init->type->get_string() << std::endl;
+}
+
+void method_class::traverse() {
+	// NOT COMPLETED!
+}
+
+void int_const_class::traverse() {
+	set_type(Int);
+}
+
+void no_expr_class::traverse() {
+	set_type(No_type);
 }
 
 /*   This is the entry point to the semantic checker.

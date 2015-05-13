@@ -35,7 +35,5 @@ public:
   void traverse();
 };
 
-extern SymbolTable<Symbol, tree_node> globalSymbolTable;
-
 #endif
 
