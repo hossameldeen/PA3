@@ -241,6 +241,15 @@ void ClassTable::traverse() {
 	globalSymbolTable.exitscope();
 }
 
+void class__class::traverse() {
+	globalSymbolTable.enterscope();
+	for (int i = features->first(); features->more(i); i = features->next(i))
+		globalSymbolTable.addid(features->nth(i)->getName(), features->nth(i));
+	
+	for (int i = features->first(); features->more(i); i = features->next(i))
+		features->nth(i)->traverse();
+}
+
 /*   This is the entry point to the semantic checker.
 
      Your checker should do the following two things:
