@@ -235,8 +235,12 @@ ostream& ClassTable::semant_error()
 
 void ClassTable::traverse() {
 	globalSymbolTable.enterscope();
-	for (int i = allClasses->first(); allClasses->more(i); i = allClasses->next(i))
-		globalSymbolTable.addid(allClasses->nth(i)->getName(), allClasses->nth(i));
+	for (int i = allClasses->first(); allClasses->more(i); i = allClasses->next(i)) {
+		Class_ curClass = allClasses->nth(i);	// NOTE: this is a pointer. In "cool-tree.h": typedef class Class__class *Class_;
+		if (curClass->getName() == Object || curClass->getName() == IO || curClass->getName() == Int || curClass->getName() == Bool || curClass->getName() == Str)
+			continue;
+		globalSymbolTable.addid(curClass->getName(), allClasses->nth(i));
+	}
 
 	for (int i = allClasses->first(); allClasses->more(i); i = allClasses->next(i))
 		allClasses->nth(i)->traverse();
@@ -255,15 +259,17 @@ void class__class::traverse() {
 }
 
 void attr_class::traverse() {
+	if (name != idtable.add_string("i"))
+		return;
 	init->traverse();
 	cout << name << endl;
-	//if (init->get_type() != type_decl) {
-		//classtable->semant_error() << "attribute " << name << " has type ";
-		//type_decl->print(classtable->semant_error());
-		//classtable->semant_error() << " while, the expression has type ";
-		//init->get_type()->print(classtable->semant_error());
-		//classtable->semant_error() << std::endl;
-	//}
+	if (init->get_type() != No_type && init->get_type() != type_decl) {
+		classtable->semant_error() << "attribute " << name << " has type ";
+		type_decl->print(classtable->semant_error());
+		classtable->semant_error() << " while, the expression has type ";
+		init->get_type()->print(classtable->semant_error());
+		classtable->semant_error() << std::endl;
+	}
 }
 
 void method_class::traverse() {
