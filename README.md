@@ -24,18 +24,20 @@ Ummm .. will write the state of each thing here isA. But now it'll be empty:
 - case_expr:
 - new_expr:
 - isvoid_expr:
-- plus_expr:
-- sub_expr:
-- mul_expr:
-- divide_expr:
-- neg_expr:
-- less than_expr:
-- le_expr:
-- eq_expr:
-- not_expr:
+- plus_expr: Done.
+- sub_expr: Done.
+- mul_expr: Done.
+- divide_expr: Done.
+- comp_expr: Done
+- less than_expr: Done.
+- le_expr: Done.
+- eq_expr: Done.
+- not_expr: Done.
 - parenthesis expr: Probably, won't need to do anything.
 - object_expr: Done as idea, but not as code.
 - int_const: Done.
 - string_const: Done.
 - boolean_const: Done.
 - self things
+
+ALMOST NONE IS TESTED!

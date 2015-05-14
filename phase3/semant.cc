@@ -312,6 +312,95 @@ void assign_class::traverse() {
 	set_type(expr->get_type());
 }
 
+void new__class::get_type() {
+	Class_
+}
+
+void plus_class::traverse() {
+	e1->traverse();
+	e2->traverse();
+	if (e1->get_type() != Int || e2->get_type() != Int)
+		classtable->semant_error() << "You're doing arithmetic operations on non-integers." << endl;
+}
+
+void sub_class::traverse() {
+	e1->traverse();
+	e2->traverse();
+	if (e1->get_type() != Int || e2->get_type() != Int)
+		classtable->semant_error() << "You're doing arithmetic operations on non-integers." << endl;
+}
+
+void mul_class::traverse() {
+	e1->traverse();
+	e2->traverse();
+	if (e1->get_type() != Int || e2->get_type() != Int)
+		classtable->semant_error() << "You're doing arithmetic operations on non-integers." << endl;
+}
+
+void divide_class::traverse() {
+	e1->traverse();
+	e2->traverse();
+	if (e1->get_type() != Int || e2->get_type() != Int)
+		classtable->semant_error() << "You're doing arithmetic operations on non-integers." << endl;
+}
+
+void comp_class::traverse() {
+	e1->traverse();
+	if (e1->get_type() != Int)
+		classtable->semant_error() << "The expression is not an integer and you're trying to get its complement" << endl;
+}
+
+void lt_expr::traverse() {
+	e1->traverse();
+	e2->traverse();
+	if (e1->get_type() == e2->get_type() && e1->get_type() == Int)
+		return;
+	if (e1->get_type() == e2->get_type() && e1->get_type() == Str)
+		return;
+	if (e1->get_type() == e2->get_type() && e1->get_type() == Bool)
+		return;
+	if (e1->get_type() != e2->get_type())
+		classtable->semant_error() << "The compared expressions don't have the same type." << endl;
+	else
+		classtable->semant_error() << "They're not of comparable types." << endl;
+}
+
+void leq_expr::traverse() {
+	e1->traverse();
+	e2->traverse();
+	if (e1->get_type() == e2->get_type() && e1->get_type() == Int)
+		return;
+	if (e1->get_type() == e2->get_type() && e1->get_type() == Str)
+		return;
+	if (e1->get_type() == e2->get_type() && e1->get_type() == Bool)
+		return;
+	if (e1->get_type() != e2->get_type())
+		classtable->semant_error() << "The compared expressions don't have the same type." << endl;
+	else
+		classtable->semant_error() << "They're not of comparable types." << endl;
+}
+
+void eq_expr::traverse() {
+	e1->traverse();
+	e2->traverse();
+	if (e1->get_type() == e2->get_type() && e1->get_type() == Int)
+		return;
+	if (e1->get_type() == e2->get_type() && e1->get_type() == Str)
+		return;
+	if (e1->get_type() == e2->get_type() && e1->get_type() == Bool)
+		return;
+	if (e1->get_type() != e2->get_type())
+		classtable->semant_error() << "The compared expressions don't have the same type." << endl;
+	else
+		classtable->semant_error() << "They're not of comparable types." << endl;
+}
+
+void neg_class::traverse() {
+	e1->traverse();
+	if (e1->get_type() != Bool)
+		classtable->semant_error() << "The expression is not a boolean expression." << endl;
+}
+
 void object_class::traverse() {
 	tree_node *v = globalSymbolTable.lookup(name);
 	if (v == NULL) {
@@ -343,10 +432,10 @@ void bool_const_class::traverse() {
 	set_type(Bool);
 }
 
-
 void no_expr_class::traverse() {
 	set_type(No_type);
 }
+
 
 /*   This is the entry point to the semantic checker.
 
