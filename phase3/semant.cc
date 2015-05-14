@@ -240,7 +240,11 @@ void ClassTable::traverse() {
 		Class_ curClass = allClasses->nth(i);	// NOTE: this is a pointer. In "cool-tree.h": typedef class Class__class *Class_;
 		if (curClass->getName() == Object || curClass->getName() == IO || curClass->getName() == Int || curClass->getName() == Bool || curClass->getName() == Str)
 			continue;
-		globalSymbolTable.addid(curClass->getName(), allClasses->nth(i));
+		tree_node *v = globalSymbolTable.probe(curClass->getName());
+		if (v == NULL)
+			globalSymbolTable.addid(curClass->getName(), allClasses->nth(i));
+		else
+			classtable->semant_error() << curClass->getName() << " has already been defined. But you're redefining it here." << std::endl;
 	}
 
 	for (int i = allClasses->first(); allClasses->more(i); i = allClasses->next(i))
@@ -252,7 +256,7 @@ void ClassTable::traverse() {
 void class__class::traverse() {
 	globalSymbolTable.enterscope();
 	for (int i = features->first(); features->more(i); i = features->next(i)) {
-		tree_node *v = globalSymbolTable.lookup(features->nth(i)->getName());
+		tree_node *v = globalSymbolTable.probe(features->nth(i)->getName());
 		if (v == NULL)
 			globalSymbolTable.addid(features->nth(i)->getName(), features->nth(i));
 		else
@@ -276,20 +280,32 @@ void attr_class::traverse() {
 }
 
 void method_class::traverse() {
-	// NOT COMPLETED!
+	globalSymbolTable.enterscope();
+	for (int i = formals->first(); formals->more(i); i = formals->next(i)) {
+		tree_node *v = globalSymbolTable.probe(formals->nth(i)->getName());
+		if (v == NULL)
+			globalSymbolTable.addid(formals->nth(i)->getName(), formals->nth(i));
+		else
+			classtable->semant_error() << formals->nth(i)->getName() << " has already been defined. But you're redefining it here." << std::endl;
+	}
+	
+	if (expr->get_type() != return_type)
+		classtable->semant_error() << name << " has return type " << return_type << " while the expression returned has type " << expr->get_type()->get_string() << endl;
+	
+	globalSymbolTable.exitscope();
 }
 
 void assign_class::traverse() {
 	tree_node *v = globalSymbolTable.lookup(name);
 	if (v == NULL) {
-		classtable->semant_error() << name << " is undefined." << endl;		return;
+		classtable->semant_error() << name << " is undefined." << endl;		set_type(No_type);		return;
 	}
 	attr_class *theObject = dynamic_cast<attr_class*>(v);
 	if (theObject == NULL) {
-		classtable->semant_error() << name << " is NOT an object." << endl;		return;
+		classtable->semant_error() << name << " is NOT an object." << endl;		set_type(No_type);		return;
 	}
 	if (expr->get_type() != theObject->get_type()) {
-		classtable->semant_error() << theObject->getName() << " has type " << theObject->get_type()->get_string() << " while the expression assigned has type " << expr->get_type()->get_string() << endl;		return;
+		classtable->semant_error() << theObject->getName() << " has type " << theObject->get_type()->get_string() << " while the expression assigned has type " << expr->get_type()->get_string() << endl;		set_type(No_type);		return;
 	}
 	set_type(expr->get_type());
 }
@@ -310,11 +326,11 @@ void string_const_class::traverse() {
 void object_class::traverse() {
 	tree_node *v = globalSymbolTable.lookup(name);
 	if (v == NULL) {
-		classtable->semant_error() << name << " is undefined." << endl;		return;
+		classtable->semant_error() << name << " is undefined." << endl;		set_type(No_type);		return;
 	}
 	Expression_class *expr = dynamic_cast<Expression_class*>(v);
 	if (expr == NULL) {
-		classtable->semant_error() << name << " is NOT an expression." << endl;		return;
+		classtable->semant_error() << name << " is NOT an expression." << endl;		set_type(No_type);		return;
 	}
 	set_type(expr->get_type());
 }
