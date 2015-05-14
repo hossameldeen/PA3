@@ -269,16 +269,26 @@ void class__class::traverse() {
 }
 
 void attr_class::traverse() {
-	if (name != idtable.add_string("i"))
+	if (name == val || name == str_field)
 		return;
 	init->traverse();
-	//cout << name << endl;
 	if (init->get_type() != No_type && init->get_type() != type_decl) {
 		classtable->semant_error() << "attribute " << name << " has type " << type_decl->get_string() << " while, the expression has type " << init->get_type()->get_string() << std::endl;
 	}
 }
 
 void method_class::traverse() {
+	if (name == cool_abort ||
+		name == idtable.add_string("copy") ||
+		name == type_name ||
+		name == out_int ||
+		name == out_string ||
+		name == in_int ||
+		name == in_string ||
+		name == length ||
+		name == concat ||
+		name == substr)
+		return;
 	globalSymbolTable.enterscope();
 	for (int i = formals->first(); formals->more(i); i = formals->next(i)) {
 		tree_node *v = globalSymbolTable.probe(formals->nth(i)->getName());
