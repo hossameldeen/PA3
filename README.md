@@ -8,6 +8,12 @@ Some notes to myself:
 - Do NOT forget: In object_class::traverse(), you need to check whether the ID is defined through attribute, formal, let, or case.
 
 
+# What to do next?
+Look at the table below and implement the unimplemented.
+Probably, you'll need to implement:
+- traverse for most nodes (NOT all). Sometimes the traverse does nothing. But usually, it sets the type of an expression.
+- get_type() for expression nodes.
+
 Ummm .. will write the state of each thing here isA. But now it'll be empty:
 - program:
 - class:
@@ -23,7 +29,7 @@ Ummm .. will write the state of each thing here isA. But now it'll be empty:
 - let_expr:
 - case_expr:
 - new_expr:
-- isvoid_expr:
+- isvoid_expr: Done.
 - plus_expr: Done.
 - sub_expr: Done.
 - mul_expr: Done.

@@ -312,10 +312,6 @@ void assign_class::traverse() {
 	set_type(expr->get_type());
 }
 
-void new__class::get_type() {
-	Class_
-}
-
 void plus_class::traverse() {
 	e1->traverse();
 	e2->traverse();
