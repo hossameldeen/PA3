@@ -15,20 +15,20 @@ Probably, you'll need to implement:
 - get_type() for expression nodes.
 
 Ummm .. will write the state of each thing here isA. But now it'll be empty:
-- program:
-- class:
-- feature as method:
-- feature as attribute:
-- formal:
-- assign_expr:
+- program: Done.
+- class: Done.
+- feature as method: Done.
+- feature as attribute: Done.
+- formal: Done.
+- assign_expr: Done.
 - static_dispatch:
 - dispatch:
-- cond_expr:
-- loop_expr:
+- cond_expr: Done.
+- loop_expr: Done.
 - block_expr:
 - let_expr:
-- case_expr:
-- new_expr:
+- branch_expr:
+- new_expr: Done.
 - isvoid_expr: Done.
 - plus_expr: Done.
 - sub_expr: Done.

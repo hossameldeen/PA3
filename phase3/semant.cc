@@ -272,7 +272,6 @@ void attr_class::traverse() {
 	if (name != idtable.add_string("i"))
 		return;
 	init->traverse();
-	tree_node *v = globalSymbolTable.lookup(name);
 	//cout << name << endl;
 	if (init->get_type() != No_type && init->get_type() != type_decl) {
 		classtable->semant_error() << "attribute " << name << " has type " << type_decl->get_string() << " while, the expression has type " << init->get_type()->get_string() << std::endl;
@@ -302,99 +301,143 @@ void assign_class::traverse() {
 	if (v == NULL) {
 		classtable->semant_error() << name << " is undefined." << endl;		set_type(No_type);		return;
 	}
-	attr_class *theObject = dynamic_cast<attr_class*>(v);
-	if (theObject == NULL) {
-		classtable->semant_error() << name << " is NOT an object." << endl;		set_type(No_type);		return;
+	attr_class *fromAttr = dynamic_cast<attr_class*>(v);
+	Formal *fromFormal = dynamic_cast<Formal>(v);
+	//attr_class *fromLet = dynamic_cast<let_ex>(v);
+	//attr_class *fromCase = dynamic_cast<Formal_>(v);
+	if (fromAttr == NULL && fromFormal == NULL) {
+		classtable->semant_error() << name << " is NOT defined as object." << endl;		set_type(No_type);		return;
 	}
-	if (expr->get_type() != theObject->get_type()) {
-		classtable->semant_error() << theObject->getName() << " has type " << theObject->get_type()->get_string() << " while the expression assigned has type " << expr->get_type()->get_string() << endl;		set_type(No_type);		return;
+	if (fromAttr != NULL && expr->get_type() != fromAttr->get_type())
+		classtable->semant_error() << fromAttr->getName() << " has type " << fromAttr->get_type()->get_string() << " while the expression assigned has type " << expr->get_type()->get_string() << endl;		set_type(No_type);		return;
+
+	if (fromFormal != NULL && expr->get_type() != fromFormal->get_type()) {
+		classtable->semant_error() << fromFormal->getName() << " has type " << fromFormal->get_type()->get_string() << " while the expression assigned has type " << expr->get_type()->get_string() << endl;		set_type(No_type);		return;
+		set_type(No_type);
 	}
-	set_type(expr->get_type());
+	else
+		set_type(expr->get_type());
 }
 
 void plus_class::traverse() {
 	e1->traverse();
 	e2->traverse();
-	if (e1->get_type() != Int || e2->get_type() != Int)
+	if (e1->get_type() != Int || e2->get_type() != Int) {
 		classtable->semant_error() << "You're doing arithmetic operations on non-integers." << endl;
+		set_type(No_type);
+	}
+	else
+		set_type(Int);
 }
 
 void sub_class::traverse() {
 	e1->traverse();
 	e2->traverse();
-	if (e1->get_type() != Int || e2->get_type() != Int)
+	if (e1->get_type() != Int || e2->get_type() != Int) {
 		classtable->semant_error() << "You're doing arithmetic operations on non-integers." << endl;
+		set_type(No_type);
+	}
+	else
+		set_type(Int);
 }
 
 void mul_class::traverse() {
 	e1->traverse();
 	e2->traverse();
-	if (e1->get_type() != Int || e2->get_type() != Int)
+	if (e1->get_type() != Int || e2->get_type() != Int) {
 		classtable->semant_error() << "You're doing arithmetic operations on non-integers." << endl;
+		set_type(No_type);
+	}
+	else
+		set_type(Int);
 }
 
 void divide_class::traverse() {
 	e1->traverse();
 	e2->traverse();
-	if (e1->get_type() != Int || e2->get_type() != Int)
+	if (e1->get_type() != Int || e2->get_type() != Int) {
 		classtable->semant_error() << "You're doing arithmetic operations on non-integers." << endl;
+		set_type(No_type);
+	}
+	else
+		set_type(Int);
 }
 
 void comp_class::traverse() {
 	e1->traverse();
-	if (e1->get_type() != Int)
+	if (e1->get_type() != Int) {
 		classtable->semant_error() << "The expression is not an integer and you're trying to get its complement" << endl;
+		set_type(No_type);
+	}
+	else
+		set_type(Int);
 }
 
 void lt_expr::traverse() {
 	e1->traverse();
 	e2->traverse();
 	if (e1->get_type() == e2->get_type() && e1->get_type() == Int)
-		return;
+		set_type(Bool);
 	if (e1->get_type() == e2->get_type() && e1->get_type() == Str)
-		return;
+		set_type(Bool);
 	if (e1->get_type() == e2->get_type() && e1->get_type() == Bool)
-		return;
-	if (e1->get_type() != e2->get_type())
+		set_type(Bool);
+	if (e1->get_type() != e2->get_type()) {
 		classtable->semant_error() << "The compared expressions don't have the same type." << endl;
-	else
+		set_type(No_type);
+	}
+	else {
 		classtable->semant_error() << "They're not of comparable types." << endl;
+		set_type(No_type);
+	}
 }
 
 void leq_expr::traverse() {
 	e1->traverse();
 	e2->traverse();
 	if (e1->get_type() == e2->get_type() && e1->get_type() == Int)
-		return;
+		set_type(Bool);
 	if (e1->get_type() == e2->get_type() && e1->get_type() == Str)
-		return;
+		set_type(Bool);
 	if (e1->get_type() == e2->get_type() && e1->get_type() == Bool)
-		return;
-	if (e1->get_type() != e2->get_type())
+		set_type(Bool);
+	if (e1->get_type() != e2->get_type()) {
 		classtable->semant_error() << "The compared expressions don't have the same type." << endl;
-	else
+		set_type(No_type);
+	}
+	else {
 		classtable->semant_error() << "They're not of comparable types." << endl;
+		set_type(No_type);
+	}
 }
 
 void eq_expr::traverse() {
 	e1->traverse();
 	e2->traverse();
 	if (e1->get_type() == e2->get_type() && e1->get_type() == Int)
-		return;
+		set_type(Bool);
 	if (e1->get_type() == e2->get_type() && e1->get_type() == Str)
-		return;
+		set_type(Bool);
 	if (e1->get_type() == e2->get_type() && e1->get_type() == Bool)
-		return;
-	if (e1->get_type() != e2->get_type())
+		set_type(Bool);
+	if (e1->get_type() != e2->get_type()) {
 		classtable->semant_error() << "The compared expressions don't have the same type." << endl;
-	else
+		set_type(No_type);
+	}
+	else {
 		classtable->semant_error() << "They're not of comparable types." << endl;
+		set_type(No_type);
+	}
 }
 
 void neg_class::traverse() {
 	e1->traverse();
-	if (e1->get_type() != Bool)
+	if (e1->get_type() != Bool) {
 		classtable->semant_error() << "The expression is not a boolean expression." << endl;
+		set_type(No_type);
+	}
+	else
+		set_type(Bool);
 }
 
 void object_class::traverse() {
@@ -402,18 +445,17 @@ void object_class::traverse() {
 	if (v == NULL) {
 		classtable->semant_error() << name << " is undefined." << endl;		set_type(No_type);		return;
 	}
-	/*
-	Expression_class *expr = dynamic_cast<Expression_class*>(v);
-	Formal_class *formal = dynamic_cast<Formal_class*>(v);
-	Will be something like that:
-	if (expr != NULL) set type return
-	if (formal != NULL) set type return
-	but for all definitions' ways
-	if (expr == NULL && formal) {
-		classtable->semant_error() << name << " is neither expression nor formal." << endl;		set_type(No_type);		return;
+	attr_class *fromAttr = dynamic_cast<attr_class*>(v);
+	Formal *fromFormal = dynamic_cast<Formal>(v);
+	//attr_class *fromLet = dynamic_cast<let_ex>(v);
+	//attr_class *fromCase = dynamic_cast<Formal_>(v);
+	if (fromAttr == NULL && fromFormal == NULL) {
+		classtable->semant_error() << name << " is NOT defined as object." << endl;		set_type(No_type);		return;
 	}
-	set_type(expr->get_type());
-	*/
+	if (fromAttr != NULL)
+		set_type(fromAttr->get_type())
+	else if (fromFormal != NULL)
+		set_type(fromFormal->get_type());
 }
 
 void int_const_class::traverse() {
@@ -432,6 +474,67 @@ void no_expr_class::traverse() {
 	set_type(No_type);
 }
 
+void new__class::traverse() {
+	tree_node *v = globalSymbolTable.lookup(type_name);
+	if (v == NULL){
+		classtable->semant_error() << type_name << " not defined." << std::endl;
+		set_type(No_type);
+	}
+	else if (dynamic_cast<Class_>(v) == NULL) {
+		classtable->semant_error() << type_name << " is not a type." << std::endl;
+		set_type(No_type);
+	}
+	else
+	{
+		set_type(type_name);
+	}
+}
+
+void cond_class::traverse() {
+	pred->traverse();
+	globalSymbolTable.enterscope();
+	then_exp->traverse();
+	globalSymbolTable.exitscope();
+	
+	globalSymbolTable.enterscope();
+	else_exp->traverse();
+	globalSymbolTable.enterscope();
+	
+	if(pred->get_type() != Bool) {
+		classtable->semant_error() << "The precondition expression is not a boolean expression." << endl;
+		set_type(No_type);
+	}
+	else if (then_expr->get_type() != else_expr->get_type() {
+		classtable->semant_error() << "The then and else expressions don't have the same type." << endl;
+		set_type(No_type);
+	}
+	else
+		set_type(then_expr->get_type());
+}
+
+void loop_class::traverse() {
+	pred->traverse();
+	globalSymbolTable.enterscope();
+	body_exp->traverse();
+	globalSymbolTable.exitscope();
+	if(pred->get_type() != Bool) {
+		classtable->semant_error() << "The precondition expression is not a boolean expression." << endl;
+		set_type(No_type);
+	}
+	else
+		set_type(Object);
+}
+
+void branch_class::traverse() {
+	/*globalSymbolTable.enterscope();
+	tree_node *v = globalSymbolTable.probe(name);
+	if (v == NULL){
+		globalSymbolTable.addid(name, this);
+	}else{
+		classtable->semant_error() << name << " has been defined." << std::endl;
+	}
+	globalSymbolTable.exitscope();*/
+}
 
 /*   This is the entry point to the semantic checker.
 
