@@ -542,6 +542,17 @@ void isvoid_class::traverse() {
 		set_type(Bool);
 }
 
+void block_class::traverse() {
+	globalSymbolTable.enterscope();
+	Expression lastExpr = NULL;
+	for (int i = body->first(); body->more(i); i = body->next(i)) {
+		body->nth(i)->traverse();
+		lastExpr = body->nth(i);
+	}
+	set_type(lastExpr->get_type());
+	globalSymbolTable.exitscope();
+}
+
 /*void branch_class::traverse() {
 	globalSymbolTable.enterscope();
 	tree_node *v = globalSymbolTable.probe(name);
