@@ -289,6 +289,8 @@ void method_class::traverse() {
 			classtable->semant_error() << formals->nth(i)->getName() << " has already been defined. But you're redefining it here." << std::endl;
 	}
 	
+	expr->traverse();
+	
 	if (expr->get_type() != return_type)
 		classtable->semant_error() << name << " has return type " << return_type << " while the expression returned has type " << expr->get_type()->get_string() << endl;
 	
@@ -310,30 +312,37 @@ void assign_class::traverse() {
 	set_type(expr->get_type());
 }
 
-void int_const_class::traverse() {
-	set_type(Int);
+void object_class::traverse() {
+	tree_node *v = globalSymbolTable.lookup(name);
+	if (v == NULL) {
+		classtable->semant_error() << name << " is undefined." << endl;		set_type(No_type);		return;
+	}
+	/*
+	Expression_class *expr = dynamic_cast<Expression_class*>(v);
+	Formal_class *formal = dynamic_cast<Formal_class*>(v);
+	Will be something like that:
+	if (expr != NULL) set type return
+	if (formal != NULL) set type return
+	but for all definitions' ways
+	if (expr == NULL && formal) {
+		classtable->semant_error() << name << " is neither expression nor formal." << endl;		set_type(No_type);		return;
+	}
+	set_type(expr->get_type());
+	*/
 }
 
-void bool_const_class::traverse() {
-	set_type(Bool);
+void int_const_class::traverse() {
+	set_type(Int);
 }
 
 void string_const_class::traverse() {
 	set_type(Str);
 }
 
-// NOT TESTED YET!
-void object_class::traverse() {
-	tree_node *v = globalSymbolTable.lookup(name);
-	if (v == NULL) {
-		classtable->semant_error() << name << " is undefined." << endl;		set_type(No_type);		return;
-	}
-	Expression_class *expr = dynamic_cast<Expression_class*>(v);
-	if (expr == NULL) {
-		classtable->semant_error() << name << " is NOT an expression." << endl;		set_type(No_type);		return;
-	}
-	set_type(expr->get_type());
+void bool_const_class::traverse() {
+	set_type(Bool);
 }
+
 
 void no_expr_class::traverse() {
 	set_type(No_type);

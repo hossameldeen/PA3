@@ -67,7 +67,8 @@ class Formal_class : public tree_node {
 public:
    tree_node *copy()		 { return copy_Formal(); }
    virtual Formal copy_Formal() = 0;
-   virtual  Symbol getName() = 0;
+   virtual Symbol getName() = 0;
+   virtual Symbol get_type() = 0;
 
 #ifdef Formal_EXTRAS
    Formal_EXTRAS
@@ -246,6 +247,7 @@ public:
    }
    Formal copy_Formal();
    virtual  Symbol getName() {return name;}
+   virtual Symbol get_type() {return type_decl;}
    void dump(ostream& stream, int n);
 
 #ifdef Formal_SHARED_EXTRAS
