@@ -395,7 +395,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse() {}
+   virtual void traverse();
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -439,7 +439,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse() ;
+   virtual void traverse() {}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -774,7 +774,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse() {if (e1->get_type() == No_type) set_type(No_type); else set_type(Bool);}
+   virtual void traverse();
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
