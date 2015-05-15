@@ -554,6 +554,7 @@ void block_class::traverse() {
 }
 
 void static_dispatch_class::traverse() {
+
 	expr->traverse();
 	for (int i = actual->first(); actual->more(i); i = actual->next(i))
 		actual->nth(i)->traverse();
@@ -569,8 +570,9 @@ void static_dispatch_class::traverse() {
 		return;
 	}
 	method_class *theMethod = NULL;
-	for (int i = actual->first(); actual->more(i); i = actual->next(i)) {
-		theMethod = dynamic_cast<method_class*>(actual->nth(i));
+	Features features = exprType->getFeaturs();
+	for (int i = features->first(); features->more(i); i = features->next(i)) {
+		theMethod = dynamic_cast<method_class*>(features->nth(i));
 		if (theMethod->getName() == name)
 			break;
 	}
@@ -599,6 +601,43 @@ void static_dispatch_class::traverse() {
 	}
 }
 
+void dispatch_class::traverse() {
+	
+	expr->traverse();
+	for (int i = actual->first(); actual->more(i); i = actual->next(i))
+		actual->nth(i)->traverse();
+	method_class * theMethod = dynamic_cast<method_class *>(globalSymbolTable.lookup(name));
+	if (theMethod == NULL) {
+		classtable->semant_error() << name->get_string() << " is not a defined." << endl;
+		set_type(No_type);
+		return;
+	}
+	Symbol type_name = theMethod->getReturnType();
+	if (expr->get_type() != type_name) {
+		classtable->semant_error() << "Expression has type " << expr->get_type()->get_string() << " while it's static to be " << type_name->get_string() << endl;
+		set_type(No_type);
+		return;
+	}
+	
+	Formals methodFormals = theMethod->getFormals();
+	if (methodFormals->len() != actual->len()) {
+		classtable->semant_error() << "No method " << name << " with this number of parameters is defined in " << type_name->get_string() << endl;
+		set_type(No_type);
+		return;
+	}
+	bool allGood = true;
+	for (int i = methodFormals->first(), j = actual->first(); methodFormals->more(i); i = actual->next(i), j = actual->next(j))
+		if (methodFormals->nth(i)->get_type() != actual->nth(i)->get_type()) {
+			allGood = false;
+			break;
+		}
+	if (allGood)
+		set_type(type_name);
+	else {
+		classtable->semant_error() << "No method with such parameters' expressions is defined. Method name: " << name->get_string() << endl;
+		set_type(No_type);
+	}
+}
 /*void branch_class::traverse() {
 	globalSymbolTable.enterscope();
 	tree_node *v = globalSymbolTable.probe(name);

@@ -21,8 +21,8 @@ Ummm .. will write the state of each thing here isA. But now it'll be empty:
 - feature as attribute: Done.
 - formal: Done.
 - assign_expr: Done.
-- static_dispatch: Done.
-- dispatch:
+- static_dispatch: Done. I modify a bit
+- dispatch:Done
 - cond_expr: Done.
 - loop_expr: Done.
 - block_expr: Done.
