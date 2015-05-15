@@ -45,5 +45,6 @@ Ummm .. will write the state of each thing here isA. But now it'll be empty:
 - string_const: Done.
 - boolean_const: Done.
 - self things
+-------------------------------
 
 ALMOST NONE IS TESTED!
