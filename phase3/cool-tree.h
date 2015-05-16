@@ -100,6 +100,7 @@ class Case_class : public tree_node {
 public:
    tree_node *copy()		 { return copy_Case(); }
    virtual Case copy_Case() = 0;
+   virtual void traverse() = 0;
 
 #ifdef Case_EXTRAS
    Case_EXTRAS
@@ -271,6 +272,7 @@ protected:
    Symbol type_decl;
    Expression expr;
 public:
+	virtual void traverse();
    branch_class(Symbol a1, Symbol a2, Expression a3) {
       name = a1;
       type_decl = a2;
@@ -423,7 +425,7 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse() {}
+   virtual void traverse() ;
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS

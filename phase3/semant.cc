@@ -648,17 +648,26 @@ void dispatch_class::traverse() {
 		set_type(No_type);
 	}
 }
-/*void branch_class::traverse() {
+void branch_class::traverse() {
 	globalSymbolTable.enterscope();
-	tree_node *v = globalSymbolTable.probe(name);
-	if (v == NULL){
-		globalSymbolTable.addid(name, this);
+	tree_node *t  = globalSymbolTable.lookup(type_decl);
+	if(t == NULL){
+		classtable->semant_error() <<type_decl <<" is not a type \n";
 	}else{
-		classtable->semant_error() << name << " has been defined." << std::endl;
-	}
+		globalSymbolTable.addid(name, this);
+		}
+	expr->traverse();
 	globalSymbolTable.exitscope();
-}*/
+}
 
+void typcase_class::traverse(){
+	expr->traverse();
+	
+	for (int i = cases->first(); cases->more(i); i = cases->next(i)){
+		cases->nth(i)->traverse();
+	}
+	set_type(Object);
+}
 /*   This is the entry point to the semantic checker.
 
      Your checker should do the following two things:
