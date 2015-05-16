@@ -651,11 +651,11 @@ void dispatch_class::traverse() {
 		return;
 	}
 	Symbol type_name = theMethod->getType();
-	if (expr->get_type() != type_name) {
-		classtable->semant_error() << "Expression has type " << expr->get_type()->get_string() << " while it's static to be " << type_name->get_string() << endl;
+	/*if (expr->get_type() != type_name) {
+		classtable->semant_error() <<"in "<<name << " method dispatch:"<< "Expression has type " << expr->get_type()->get_string() << " while it's static to be " << type_name->get_string() << endl;
 		set_type(No_type);
 		return;
-	}
+	}*/
 	
 	Formals methodFormals = theMethod->getFormals();
 	if (methodFormals->len() != actual->len()) {
@@ -669,8 +669,10 @@ void dispatch_class::traverse() {
 			allGood = false;
 			break;
 		}
-	if (allGood)
+	if (allGood){
 		set_type(type_name);
+		cout <<"type_name"<<type_name<<endl;
+		}
 	else {
 		classtable->semant_error() << "No method with such parameters' expressions is defined. Method name: " << name->get_string() << endl;
 		set_type(No_type);

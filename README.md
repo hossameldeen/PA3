@@ -58,5 +58,7 @@ feature:
  - declare attributes run correctly
  - declare method with any exist return type run  correctly
 
+ dispatch:
+  - fixed 
 
 ALMOST NONE IS TESTED!
