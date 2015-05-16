@@ -48,4 +48,15 @@ Ummm .. will write the state of each thing here isA. But now it'll be empty:
 - self things
 -------------------------------
 modifications in expression set type and check if type of an instance exist
+
+testing:
+class:
+ - one class run correctly
+ - two class run correctly
+ - more class run
+feature:
+ - declare attributes run correctly
+ - declare method with any exist return type run  correctly
+
+
 ALMOST NONE IS TESTED!
