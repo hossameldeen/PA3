@@ -6,6 +6,7 @@ Some notes to myself:
 - Do NOT forget to check for double definition. i.e., if something has been defined twice.
 - Do NOT forget to edit attr_class traversal to remove the condition, and find a way to not check for the inherited or coming-from-somewhere-else declarations.
 - Do NOT forget: In object_class::traverse(), you need to check whether the ID is defined through attribute, formal, let, or case.
+- Do NOT forget: In some if-conditions you should've put `{}` but you didn't.
 
 
 # What to do next?
@@ -26,7 +27,7 @@ Ummm .. will write the state of each thing here isA. But now it'll be empty:
 - cond_expr: Done.
 - loop_expr: Done.
 - block_expr: Done.
-- let_expr:
+- let_expr: Done.
 - branch_expr:
 - new_expr: Done.
 - isvoid_expr: Done.

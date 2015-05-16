@@ -473,7 +473,9 @@ public:
    }
    Expression copy_Expression();
    void dump(ostream& stream, int n);
-   virtual void traverse() {}
+   virtual Symbol getIdentifierName() {return identifier;}
+   virtual Symbol getIdentifierType() {return type_decl;}
+   virtual void traverse();
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
