@@ -323,7 +323,7 @@ void assign_class::traverse() {
 	attr_class *fromAttr = dynamic_cast<attr_class*>(v);
 	Formal fromFormal = dynamic_cast<Formal>(v);
 	let_class *fromLet = dynamic_cast<let_class*>(v);
-	//attr_class *fromCase = dynamic_cast<Formal_>(v);
+	branch_class *fromCase = dynamic_cast<branch_class*>(v);
 	if (fromAttr == NULL && fromFormal == NULL && fromLet == NULL) {
 		classtable->semant_error() << name << " is NOT defined as object." << endl;		set_type(No_type);
 	}
@@ -339,6 +339,9 @@ void assign_class::traverse() {
 	else if (fromLet != NULL && expr->get_type() != fromLet->getIdentifierType()) {
 		classtable->semant_error() << fromLet->getIdentifierName() << " has type " << fromLet->getIdentifierType()->get_string() << " while the expression assigned has type " << expr->get_type()->get_string() << endl;		set_type(No_type);
 	}
+	else if (fromCase != NULL && expr->get_type() != fromCase->getIdentifierType()) {
+		classtable->semant_error() << fromCase->getIdentifierName() << " has type " << fromCase->getIdentifierType()->get_string() << " while the expression assigned has type " << expr->get_type()->get_string() << endl;		set_type(No_type);
+	}
 	else
 		set_type(expr->get_type());
 }
@@ -346,7 +349,10 @@ void assign_class::traverse() {
 void let_class::traverse() {
 	init->traverse();
 	globalSymbolTable.enterscope();
-	if (init->get_type() != No_type && init->get_type() != type_decl)
+	Class_ theIdType = dynamic_cast<Class_>(globalSymbolTable.lookup(type_decl));
+	if (theIdType == NULL)
+		classtable->semant_error() << identifier << " has type " << type_decl << ", but that's not a type." << endl;
+	else if (init->get_type() != No_type && init->get_type() != type_decl)
 		classtable->semant_error() << identifier << " has type " << type_decl << " while the expression assigned in let statement has type " << init->get_type()->get_string() << endl;
 	globalSymbolTable.addid(identifier, this);
 	body->traverse();
@@ -483,8 +489,8 @@ void object_class::traverse() {
 	attr_class *fromAttr = dynamic_cast<attr_class*>(v);
 	Formal fromFormal = dynamic_cast<Formal>(v);
 	let_class *fromLet = dynamic_cast<let_class*>(v);
-	//attr_class *fromCase = dynamic_cast<Formal_>(v);
-	if (fromAttr == NULL && fromFormal == NULL && fromLet == NULL) {
+	branch_class *fromCase = dynamic_cast<branch_class*>(v);
+	if (fromAttr == NULL && fromFormal == NULL && fromLet == NULL && fromCase == NULL) {
 		classtable->semant_error() << name << " is NOT defined as object." << endl;		set_type(No_type);		return;
 	}
 	if (fromAttr != NULL)
@@ -493,6 +499,8 @@ void object_class::traverse() {
 		set_type(fromFormal->get_type());
 	else if (fromLet != NULL)
 		set_type(fromLet->getIdentifierType());
+	else if (fromCase != NULL)
+		set_type(fromCase->getIdentifierType());
 }
 
 void int_const_class::traverse() {
@@ -666,9 +674,10 @@ void dispatch_class::traverse() {
 		set_type(No_type);
 	}
 }
+
 void branch_class::traverse() {
 	globalSymbolTable.enterscope();
-	tree_node *t  = globalSymbolTable.lookup(type_decl);
+	Class_ t  = dynamic_cast<Class_>(globalSymbolTable.lookup(type_decl));
 	if(t == NULL){
 		classtable->semant_error() <<type_decl <<" is not a type \n";
 	}else{
@@ -681,11 +690,19 @@ void branch_class::traverse() {
 void typcase_class::traverse(){
 	expr->traverse();
 	
+	Case last = NULL;
 	for (int i = cases->first(); cases->more(i); i = cases->next(i)){
 		cases->nth(i)->traverse();
+		if (last == NULL)
+			last = cases->nth(i);
+		else {
+			if (last->getReturnedExpressionType() != cases->nth(i)->getReturnedExpressionType())
+				classtable->semant_error() << "2 case branches with different types" << endl;
+		}
 	}
-	set_type(Object);
+	set_type(last->getReturnedExpressionType());
 }
+
 /*   This is the entry point to the semantic checker.
 
      Your checker should do the following two things:
