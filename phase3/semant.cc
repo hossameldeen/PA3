@@ -257,6 +257,8 @@ void ClassTable::traverse() {
 
 void class__class::traverse() {
 	globalSymbolTable.enterscope();
+	attr_class *selfObject = new attr_class(self, name, new no_expr_class());
+	globalSymbolTable.addid(self, selfObject);
 	for (int i = features->first(); features->more(i); i = features->next(i)) {
 		tree_node *t  = globalSymbolTable.lookup(features->nth(i)->getType());
 		if(t == NULL && features->nth(i)->getType() != prim_slot && features->nth(i)->getType() != SELF_TYPE){
