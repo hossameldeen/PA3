@@ -322,20 +322,36 @@ void assign_class::traverse() {
 	}
 	attr_class *fromAttr = dynamic_cast<attr_class*>(v);
 	Formal fromFormal = dynamic_cast<Formal>(v);
-	//attr_class *fromLet = dynamic_cast<let_ex>(v);
+	let_class *fromLet = dynamic_cast<let_class*>(v);
 	//attr_class *fromCase = dynamic_cast<Formal_>(v);
-	if (fromAttr == NULL && fromFormal == NULL) {
-		classtable->semant_error() << name << " is NOT defined as object." << endl;		set_type(No_type);		return;
+	if (fromAttr == NULL && fromFormal == NULL && fromLet == NULL) {
+		classtable->semant_error() << name << " is NOT defined as object." << endl;		set_type(No_type);
 	}
-	if (fromAttr != NULL && expr->get_type() != fromAttr->getType())
-		classtable->semant_error() << fromAttr->getName() << " has type " << fromAttr->getType()->get_string() << " while the expression assigned has type " << expr->get_type()->get_string() << endl;		set_type(No_type);		return;
+	
+	else if (fromAttr != NULL && expr->get_type() != fromAttr->getType()) {
+		classtable->semant_error() << fromAttr->getName() << " has type " << fromAttr->getType()->get_string() << " while the expression assigned has type " << expr->get_type()->get_string() << endl;		set_type(No_type);
+	}
 
-	if (fromFormal != NULL && expr->get_type() != fromFormal->get_type()) {
-		classtable->semant_error() << fromFormal->getName() << " has type " << fromFormal->get_type()->get_string() << " while the expression assigned has type " << expr->get_type()->get_string() << endl;		set_type(No_type);		return;
-		set_type(No_type);
+	else if (fromFormal != NULL && expr->get_type() != fromFormal->get_type()) {
+		classtable->semant_error() << fromFormal->getName() << " has type " << fromFormal->get_type()->get_string() << " while the expression assigned has type " << expr->get_type()->get_string() << endl;		set_type(No_type);
+	}
+
+	else if (fromLet != NULL && expr->get_type() != fromLet->getIdentifierType()) {
+		classtable->semant_error() << fromLet->getIdentifierName() << " has type " << fromLet->getIdentifierType()->get_string() << " while the expression assigned has type " << expr->get_type()->get_string() << endl;		set_type(No_type);
 	}
 	else
 		set_type(expr->get_type());
+}
+
+void let_class::traverse() {
+	init->traverse();
+	globalSymbolTable.enterscope();
+	if (init->get_type() != No_type && init->get_type() != type_decl)
+		classtable->semant_error() << identifier << " has type " << type_decl << " while the expression assigned in let statement has type " << init->get_type()->get_string() << endl;
+	globalSymbolTable.addid(identifier, this);
+	body->traverse();
+	set_type(body->get_type());
+	globalSymbolTable.exitscope();
 }
 
 void plus_class::traverse() {
@@ -466,15 +482,17 @@ void object_class::traverse() {
 	}
 	attr_class *fromAttr = dynamic_cast<attr_class*>(v);
 	Formal fromFormal = dynamic_cast<Formal>(v);
-	//attr_class *fromLet = dynamic_cast<let_ex>(v);
+	let_class *fromLet = dynamic_cast<let_class*>(v);
 	//attr_class *fromCase = dynamic_cast<Formal_>(v);
-	if (fromAttr == NULL && fromFormal == NULL) {
+	if (fromAttr == NULL && fromFormal == NULL && fromLet == NULL) {
 		classtable->semant_error() << name << " is NOT defined as object." << endl;		set_type(No_type);		return;
 	}
 	if (fromAttr != NULL)
 		set_type(fromAttr->getType());
 	else if (fromFormal != NULL)
 		set_type(fromFormal->get_type());
+	else if (fromLet != NULL)
+		set_type(fromLet->getIdentifierType());
 }
 
 void int_const_class::traverse() {
