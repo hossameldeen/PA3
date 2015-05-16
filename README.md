@@ -46,5 +46,5 @@ Ummm .. will write the state of each thing here isA. But now it'll be empty:
 - boolean_const: Done.
 - self things
 -------------------------------
-
+modifications in expression set type and check if type of an instance exist
 ALMOST NONE IS TESTED!

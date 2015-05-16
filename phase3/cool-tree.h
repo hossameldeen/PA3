@@ -53,6 +53,7 @@ public:
    tree_node *copy()		 { return copy_Feature(); }
    virtual Feature copy_Feature() = 0;
    virtual Symbol getName() = 0;
+   virtual Symbol getType() = 0;
    virtual void traverse() = 0;
 
 #ifdef Feature_EXTRAS
@@ -199,8 +200,8 @@ public:
    Feature copy_Feature();
    void dump(ostream& stream, int n);
    virtual Symbol getName() {return name;}
+   virtual Symbol getType() {return return_type;}
    virtual Formals getFormals() {return formals;}
-   virtual Symbol getReturnType() {return return_type;}
    virtual void traverse();
 
 #ifdef Feature_SHARED_EXTRAS
@@ -228,7 +229,7 @@ public:
    void dump(ostream& stream, int n);
    virtual Symbol getName() {return name;}
    virtual void traverse();
-   virtual Symbol get_type() {return type_decl;}
+   virtual Symbol getType() {return type_decl;}
 
 #ifdef Feature_SHARED_EXTRAS
    Feature_SHARED_EXTRAS

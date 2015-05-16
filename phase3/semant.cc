@@ -238,8 +238,10 @@ void ClassTable::traverse() {
 	globalSymbolTable.enterscope();
 	for (int i = allClasses->first(); allClasses->more(i); i = allClasses->next(i)) {
 		Class_ curClass = allClasses->nth(i);	// NOTE: this is a pointer. In "cool-tree.h": typedef class Class__class *Class_;
-		if (curClass->getName() == Object || curClass->getName() == IO || curClass->getName() == Int || curClass->getName() == Bool || curClass->getName() == Str)
+		// I think we should add basic type because we we'll check if this types exist for every instance
+		/*if (curClass->getName() == Object || curClass->getName() == IO || curClass->getName() == Int || curClass->getName() == Bool || curClass->getName() == Str){
 			continue;
+			}*/
 		tree_node *v = globalSymbolTable.probe(curClass->getName());
 		if (v == NULL)
 			globalSymbolTable.addid(curClass->getName(), allClasses->nth(i));
@@ -256,6 +258,11 @@ void ClassTable::traverse() {
 void class__class::traverse() {
 	globalSymbolTable.enterscope();
 	for (int i = features->first(); features->more(i); i = features->next(i)) {
+		tree_node *t  = globalSymbolTable.lookup(features->nth(i)->getType());
+		if(t == NULL){
+			classtable->semant_error(this) << features->nth(i)->getType() << " is undefined type" << std::endl;
+			continue;
+		}
 		tree_node *v = globalSymbolTable.probe(features->nth(i)->getName());
 		if (v == NULL)
 			globalSymbolTable.addid(features->nth(i)->getName(), features->nth(i));
@@ -272,6 +279,7 @@ void attr_class::traverse() {
 	if (name == val || name == str_field)
 		return;
 	init->traverse();
+	
 	if (init->get_type() != No_type && init->get_type() != type_decl) {
 		classtable->semant_error() << "attribute " << name << " has type " << type_decl->get_string() << " while, the expression has type " << init->get_type()->get_string() << std::endl;
 	}
@@ -300,9 +308,10 @@ void method_class::traverse() {
 	
 	expr->traverse();
 	
-	if (expr->get_type() != return_type)
-		classtable->semant_error() << name << " has return type " << return_type << " while the expression returned has type " << expr->get_type()->get_string() << endl;
 	
+	if (expr->get_type() != return_type){
+		classtable->semant_error() << name << " has return type " << return_type << " while the expression returned has type " << expr->get_type()->get_string() << endl;
+	}	
 	globalSymbolTable.exitscope();
 }
 
@@ -318,8 +327,8 @@ void assign_class::traverse() {
 	if (fromAttr == NULL && fromFormal == NULL) {
 		classtable->semant_error() << name << " is NOT defined as object." << endl;		set_type(No_type);		return;
 	}
-	if (fromAttr != NULL && expr->get_type() != fromAttr->get_type())
-		classtable->semant_error() << fromAttr->getName() << " has type " << fromAttr->get_type()->get_string() << " while the expression assigned has type " << expr->get_type()->get_string() << endl;		set_type(No_type);		return;
+	if (fromAttr != NULL && expr->get_type() != fromAttr->getType())
+		classtable->semant_error() << fromAttr->getName() << " has type " << fromAttr->getType()->get_string() << " while the expression assigned has type " << expr->get_type()->get_string() << endl;		set_type(No_type);		return;
 
 	if (fromFormal != NULL && expr->get_type() != fromFormal->get_type()) {
 		classtable->semant_error() << fromFormal->getName() << " has type " << fromFormal->get_type()->get_string() << " while the expression assigned has type " << expr->get_type()->get_string() << endl;		set_type(No_type);		return;
@@ -334,7 +343,7 @@ void plus_class::traverse() {
 	e2->traverse();
 	if (e1->get_type() != Int || e2->get_type() != Int) {
 		classtable->semant_error() << "You're doing arithmetic operations on non-integers." << endl;
-		set_type(No_type);
+		set_type(Int);
 	}
 	else
 		set_type(Int);
@@ -345,7 +354,7 @@ void sub_class::traverse() {
 	e2->traverse();
 	if (e1->get_type() != Int || e2->get_type() != Int) {
 		classtable->semant_error() << "You're doing arithmetic operations on non-integers." << endl;
-		set_type(No_type);
+		set_type(Int);
 	}
 	else
 		set_type(Int);
@@ -356,7 +365,7 @@ void mul_class::traverse() {
 	e2->traverse();
 	if (e1->get_type() != Int || e2->get_type() != Int) {
 		classtable->semant_error() << "You're doing arithmetic operations on non-integers." << endl;
-		set_type(No_type);
+		set_type(Int);
 	}
 	else
 		set_type(Int);
@@ -367,7 +376,7 @@ void divide_class::traverse() {
 	e2->traverse();
 	if (e1->get_type() != Int || e2->get_type() != Int) {
 		classtable->semant_error() << "You're doing arithmetic operations on non-integers." << endl;
-		set_type(No_type);
+		set_type(Int);
 	}
 	else
 		set_type(Int);
@@ -377,7 +386,7 @@ void comp_class::traverse() {
 	e1->traverse();
 	if (e1->get_type() != Int) {
 		classtable->semant_error() << "The expression is not an integer and you're trying to get its complement" << endl;
-		set_type(No_type);
+		set_type(Int);
 	}
 	else
 		set_type(Int);
@@ -394,11 +403,11 @@ void lt_class::traverse() {
 		set_type(Bool);
 	if (e1->get_type() != e2->get_type()) {
 		classtable->semant_error() << "The compared expressions don't have the same type." << endl;
-		set_type(No_type);
+		set_type(Bool);
 	}
 	else {
 		classtable->semant_error() << "They're not of comparable types." << endl;
-		set_type(No_type);
+		set_type(Bool);
 	}
 }
 
@@ -413,11 +422,11 @@ void leq_class::traverse() {
 		set_type(Bool);
 	if (e1->get_type() != e2->get_type()) {
 		classtable->semant_error() << "The compared expressions don't have the same type." << endl;
-		set_type(No_type);
+		set_type(Bool);
 	}
 	else {
 		classtable->semant_error() << "They're not of comparable types." << endl;
-		set_type(No_type);
+		set_type(Bool);
 	}
 }
 
@@ -432,11 +441,11 @@ void eq_class::traverse() {
 		set_type(Bool);
 	if (e1->get_type() != e2->get_type()) {
 		classtable->semant_error() << "The compared expressions don't have the same type." << endl;
-		set_type(No_type);
+		set_type(Bool);
 	}
 	else {
 		classtable->semant_error() << "They're not of comparable types." << endl;
-		set_type(No_type);
+		set_type(Bool);
 	}
 }
 
@@ -444,7 +453,7 @@ void neg_class::traverse() {
 	e1->traverse();
 	if (e1->get_type() != Bool) {
 		classtable->semant_error() << "The expression is not a boolean expression." << endl;
-		set_type(No_type);
+		set_type(Bool);
 	}
 	else
 		set_type(Bool);
@@ -463,7 +472,7 @@ void object_class::traverse() {
 		classtable->semant_error() << name << " is NOT defined as object." << endl;		set_type(No_type);		return;
 	}
 	if (fromAttr != NULL)
-		set_type(fromAttr->get_type());
+		set_type(fromAttr->getType());
 	else if (fromFormal != NULL)
 		set_type(fromFormal->get_type());
 }
@@ -536,8 +545,9 @@ void loop_class::traverse() {
 }
 
 void isvoid_class::traverse() {
+	e1->traverse();
 	if (e1->get_type() == No_type)
-		set_type(No_type);
+		set_type(Bool);
 	else
 		set_type(Bool);
 }
@@ -612,7 +622,7 @@ void dispatch_class::traverse() {
 		set_type(No_type);
 		return;
 	}
-	Symbol type_name = theMethod->getReturnType();
+	Symbol type_name = theMethod->getType();
 	if (expr->get_type() != type_name) {
 		classtable->semant_error() << "Expression has type " << expr->get_type()->get_string() << " while it's static to be " << type_name->get_string() << endl;
 		set_type(No_type);
