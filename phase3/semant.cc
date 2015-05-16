@@ -259,7 +259,7 @@ void class__class::traverse() {
 	globalSymbolTable.enterscope();
 	for (int i = features->first(); features->more(i); i = features->next(i)) {
 		tree_node *t  = globalSymbolTable.lookup(features->nth(i)->getType());
-		if(t == NULL){
+		if(t == NULL && features->nth(i)->getType() != prim_slot && features->nth(i)->getType() != SELF_TYPE){
 			classtable->semant_error(this) << features->nth(i)->getType() << " is undefined type" << std::endl;
 			continue;
 		}
