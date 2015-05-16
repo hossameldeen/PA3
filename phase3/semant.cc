@@ -671,9 +671,7 @@ void dispatch_class::traverse() {
 		}
 	if (allGood){
 		set_type(type_name);
-		cout <<"type_name"<<type_name<<endl;
-		}
-	else {
+	}else{
 		classtable->semant_error() << "No method with such parameters' expressions is defined. Method name: " << name->get_string() << endl;
 		set_type(No_type);
 	}

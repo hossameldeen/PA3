@@ -60,5 +60,6 @@ feature:
 
  dispatch:
   - fixed 
+  - dispatch with parameter work correctly
 
 ALMOST NONE IS TESTED!
