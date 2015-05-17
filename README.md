@@ -62,8 +62,42 @@ feature:
   - fixed 
   - dispatch with parameter work correctly
 
+------------------
+Will make an analogy with the above:
+- program: Done.
+- class: Done. one or more Done.
+- feature as method: Done.
+- feature as attribute: Done.
+- formal: Done.
+- assign_expr: Done.
+- static_dispatch: Done.
+- dispatch: Done.
+- cond_expr: Done.
+- loop_expr: .
+- block_expr: Done.
+- let_expr: .
+- branch_expr:
+- new_expr: .
+- isvoid_expr: .
+- plus_expr: .
+- sub_expr: .
+- mul_expr: .
+- divide_expr: .
+- comp_expr: 
+- less than_expr: .
+- le_expr: .
+- eq_expr: .
+- not_expr: .
+- parenthesis expr: Probably, won't need to do anything.
+- object_expr:  as idea, but not as code.
+- int_const: .
+- string_const: .
+- boolean_const: .
+- self things
+-------------------
+
 -------------------------------
 May write here last commits changes:
-- Fixed a typo.
-- Fixed dispatch. We'd understood it incorrectly.
-- Fixed static dispatch & dispatch. Had a small bug.
+- Testing mentioned above.
+- Handled SELF_TYPE.
+- Fixed a bug in eq, leq, lt.

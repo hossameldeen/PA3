@@ -265,6 +265,7 @@ void class__class::traverse() {
 	globalSymbolTable.enterscope();
 	attr_class *selfObject = new attr_class(self, name, new no_expr_class());
 	globalSymbolTable.addid(self, selfObject);
+	globalSymbolTable.addid(SELF_TYPE, this);
 	for (int i = features->first(); features->more(i); i = features->next(i)) {
 		tree_node *t  = globalSymbolTable.lookup(features->nth(i)->getType());
 		if(t == NULL && features->nth(i)->getType() != prim_slot && features->nth(i)->getType() != SELF_TYPE){
@@ -470,11 +471,11 @@ void lt_class::traverse() {
 	e2->traverse();
 	if (e1->get_type() == e2->get_type() && e1->get_type() == Int)
 		set_type(Bool);
-	if (e1->get_type() == e2->get_type() && e1->get_type() == Str)
+	else if (e1->get_type() == e2->get_type() && e1->get_type() == Str)
 		set_type(Bool);
-	if (e1->get_type() == e2->get_type() && e1->get_type() == Bool)
+	else if (e1->get_type() == e2->get_type() && e1->get_type() == Bool)
 		set_type(Bool);
-	if (e1->get_type() != e2->get_type()) {
+	else if (e1->get_type() != e2->get_type()) {
 		classtable->semant_error() << "The compared expressions don't have the same type." << endl;
 		set_type(Bool);
 	}
@@ -493,11 +494,11 @@ void leq_class::traverse() {
 	e2->traverse();
 	if (e1->get_type() == e2->get_type() && e1->get_type() == Int)
 		set_type(Bool);
-	if (e1->get_type() == e2->get_type() && e1->get_type() == Str)
+	else if (e1->get_type() == e2->get_type() && e1->get_type() == Str)
 		set_type(Bool);
-	if (e1->get_type() == e2->get_type() && e1->get_type() == Bool)
+	else if (e1->get_type() == e2->get_type() && e1->get_type() == Bool)
 		set_type(Bool);
-	if (e1->get_type() != e2->get_type()) {
+	else if (e1->get_type() != e2->get_type()) {
 		classtable->semant_error() << "The compared expressions don't have the same type." << endl;
 		set_type(Bool);
 	}
@@ -516,11 +517,11 @@ void eq_class::traverse() {
 	e2->traverse();
 	if (e1->get_type() == e2->get_type() && e1->get_type() == Int)
 		set_type(Bool);
-	if (e1->get_type() == e2->get_type() && e1->get_type() == Str)
+	else if (e1->get_type() == e2->get_type() && e1->get_type() == Str)
 		set_type(Bool);
-	if (e1->get_type() == e2->get_type() && e1->get_type() == Bool)
+	else if (e1->get_type() == e2->get_type() && e1->get_type() == Bool)
 		set_type(Bool);
-	if (e1->get_type() != e2->get_type()) {
+	else if (e1->get_type() != e2->get_type()) {
 		classtable->semant_error() << "The compared expressions don't have the same type." << endl;
 		set_type(Bool);
 	}
@@ -856,7 +857,7 @@ void typcase_class::traverse(){
  */
 void program_class::semant()
 {
-	semant_debug = 1;
+	//semant_debug = 1;
 	
     initialize_constants();
 
