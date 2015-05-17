@@ -450,7 +450,7 @@ void divide_class::traverse() {
 		cout << "Entered /" << endl;
 }
 
-void comp_class::traverse() {
+void neg_class::traverse() {
 	if (semant_debug)
 		cout << "Entered comp" << endl;
 	e1->traverse();
@@ -533,7 +533,7 @@ void eq_class::traverse() {
 		cout << "Left eq" << endl;
 }
 
-void neg_class::traverse() {
+void comp_class::traverse() {
 	if (semant_debug)
 		cout << "Entered neg" << endl;
 	e1->traverse();
@@ -786,7 +786,7 @@ void dispatch_class::traverse() {
 	}
 	Formals methodFormals = theMethod->getFormals();
 	if (methodFormals->len() != actual->len()) {
-		classtable->semant_error() << "No method " << name << " with this number of parameters is defined in " << expr->get_type()->get_string() << endl;
+		classtable->semant_error() << "No method " << name << " with this number of parameters is defined in " << theMethod->getType()->get_string() << endl;
 		set_type(No_type);
 		return;
 	}
@@ -797,7 +797,7 @@ void dispatch_class::traverse() {
 			break;
 		}
 	if (allGood)
-		set_type(expr->get_type());
+		set_type(theMethod->getType());
 	else {
 		classtable->semant_error() << "No method with such parameters' expressions is defined. Method name: " << name << endl;
 		set_type(No_type);

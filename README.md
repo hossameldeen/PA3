@@ -73,27 +73,26 @@ Will make an analogy with the above:
 - static_dispatch: Done.
 - dispatch: Done.
 - cond_expr: Done.
-- loop_expr: .
+- loop_expr: Done.
 - block_expr: Done.
-- let_expr: .
-- branch_expr:
-- new_expr: .
-- isvoid_expr: .
-- plus_expr: .
-- sub_expr: .
-- mul_expr: .
-- divide_expr: .
-- comp_expr: 
-- less than_expr: .
-- le_expr: .
-- eq_expr: .
-- not_expr: .
-- parenthesis expr: Probably, won't need to do anything.
-- object_expr:  as idea, but not as code.
-- int_const: .
-- string_const: .
-- boolean_const: .
-- self things
+- let_expr: Done. (Of course, nothing is heavily tested. Just basic test cases)
+- branch_expr: Done.
+- new_expr: Done.
+- isvoid_expr: Done.
+- plus_expr: Done.
+- sub_expr: Done.
+- mul_expr: Done.
+- divide_expr: Done.
+- neg_expr: Done. (Used to be called comp_exp. Anyway, this is ~)
+- less than_expr: Done.
+- le_expr: Done.
+- eq_expr: Done.
+- not_expr: Done.
+- object_expr: Done but not all cases.
+- int_const: Done.
+- string_const: Done.
+- boolean_const: Done.
+- self things: Done, something small.
 -------------------
 
 -------------------------------
@@ -101,3 +100,6 @@ May write here last commits changes:
 - Testing mentioned above.
 - Handled SELF_TYPE.
 - Fixed a bug in eq, leq, lt.
+- Fixed something in neg.
+- We'd misunderstood neg & compl. They should be reversed. And that's done.
+- Fixed a bug I'd made in dispatch_class.
