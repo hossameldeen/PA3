@@ -716,7 +716,7 @@ void static_dispatch_class::traverse() {
 	Features features = exprType->getFeaturs();
 	for (int i = features->first(); features->more(i); i = features->next(i)) {
 		theMethod = dynamic_cast<method_class*>(features->nth(i));
-		if (theMethod->getName() == name)
+		if (theMethod != NULL && theMethod->getName() == name)
 			break;
 	}
 	if (theMethod == NULL) {
@@ -749,39 +749,56 @@ void static_dispatch_class::traverse() {
 void dispatch_class::traverse() {
 	if (semant_debug)
 		cout << "Entered dispatch with methodName = " << name << endl;
-	
+
 	expr->traverse();
-	for (int i = actual->first(); actual->more(i); i = actual->next(i))
+	bool allGood = true;
+	for (int i = actual->first(); actual->more(i); i = actual->next(i)) {
 		actual->nth(i)->traverse();
-	method_class * theMethod = dynamic_cast<method_class *>(globalSymbolTable.lookup(name));
-	if (theMethod == NULL) {
-		classtable->semant_error() << name->get_string() << " is not a defined." << endl;
+		if (actual->nth(i)->get_type() == No_type) {
+			set_type(No_type);
+			allGood = false;
+		}
+	}
+	if (!allGood)
+		return;
+	if (expr->get_type() == No_type) {
 		set_type(No_type);
 		return;
 	}
-	Symbol type_name = theMethod->getType();
-	/*if (expr->get_type() != type_name) {
-		classtable->semant_error() <<"in "<<name << " method dispatch:"<< "Expression has type " << expr->get_type()->get_string() << " while it's static to be " << type_name->get_string() << endl;
+	Class_ exprType = dynamic_cast<Class_>(globalSymbolTable.lookup(expr->get_type()));
+	if (exprType == NULL) {
+		classtable->semant_error() << expr->get_type()->get_string() << " is not a defined type." << endl;	// Probably impossible to go in
 		set_type(No_type);
 		return;
-	}*/
-	
+	}
+	method_class *theMethod = NULL;
+	Features features = exprType->getFeaturs();
+	for (int i = features->first(); features->more(i); i = features->next(i)) {
+		theMethod = dynamic_cast<method_class*>(features->nth(i));
+		if (theMethod != NULL && theMethod->getName() == name)
+			break;
+	}
+	if (theMethod == NULL) {
+		classtable->semant_error() << "No method " << name << " is defined in " << expr->get_type()->get_string() << endl;
+		set_type(No_type);
+		return;
+	}
 	Formals methodFormals = theMethod->getFormals();
 	if (methodFormals->len() != actual->len()) {
-		classtable->semant_error() << "No method " << name << " with this number of parameters is defined in " << type_name->get_string() << endl;
+		classtable->semant_error() << "No method " << name << " with this number of parameters is defined in " << expr->get_type()->get_string() << endl;
 		set_type(No_type);
 		return;
 	}
-	bool allGood = true;
+	allGood = true;
 	for (int i = methodFormals->first(), j = actual->first(); methodFormals->more(i); i = actual->next(i), j = actual->next(j))
 		if (methodFormals->nth(i)->get_type() != actual->nth(i)->get_type()) {
 			allGood = false;
 			break;
 		}
-	if (allGood){
-		set_type(type_name);
-	}else{
-		classtable->semant_error() << "No method with such parameters' expressions is defined. Method name: " << name->get_string() << endl;
+	if (allGood)
+		set_type(expr->get_type());
+	else {
+		classtable->semant_error() << "No method with such parameters' expressions is defined. Method name: " << name << endl;
 		set_type(No_type);
 	}
 	if (semant_debug)
@@ -839,7 +856,7 @@ void typcase_class::traverse(){
  */
 void program_class::semant()
 {
-	//semant_debug = 1;
+	semant_debug = 1;
 	
     initialize_constants();
 

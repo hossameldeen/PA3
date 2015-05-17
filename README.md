@@ -9,7 +9,7 @@ Some notes to myself:
 - Do NOT forget: In some if-conditions you should've put `{}` but you didn't.
 
 
-# What to do next?
+## What to do next?
 Look at the table below and implement the unimplemented.
 Probably, you'll need to implement:
 - traverse for most nodes (NOT all). Sometimes the traverse does nothing. But usually, it sets the type of an expression.
@@ -62,4 +62,8 @@ feature:
   - fixed 
   - dispatch with parameter work correctly
 
-ALMOST NONE IS TESTED!
+-------------------------------
+May write here last commits changes:
+- Fixed a typo.
+- Fixed dispatch. We'd understood it incorrectly.
+- Fixed static dispatch & dispatch. Had a small bug.
