@@ -235,6 +235,8 @@ ostream& ClassTable::semant_error()
  
 
 void ClassTable::traverse() {
+	if (semant_debug)
+		cout << "Entered ClassTable" << endl;
 	globalSymbolTable.enterscope();
 	for (int i = allClasses->first(); allClasses->more(i); i = allClasses->next(i)) {
 		Class_ curClass = allClasses->nth(i);	// NOTE: this is a pointer. In "cool-tree.h": typedef class Class__class *Class_;
@@ -253,9 +255,13 @@ void ClassTable::traverse() {
 		allClasses->nth(i)->traverse();
 	
 	globalSymbolTable.exitscope();
+	if (semant_debug)
+		cout << "Left ClassTable" << endl;
 }
 
 void class__class::traverse() {
+	if (semant_debug)
+		cout << "Entered class " << name << endl;
 	globalSymbolTable.enterscope();
 	attr_class *selfObject = new attr_class(self, name, new no_expr_class());
 	globalSymbolTable.addid(self, selfObject);
@@ -275,9 +281,13 @@ void class__class::traverse() {
 	for (int i = features->first(); features->more(i); i = features->next(i))
 		features->nth(i)->traverse();
 	globalSymbolTable.exitscope();
+	if (semant_debug)
+		cout << "Left class " << name << endl;
 }
 
 void attr_class::traverse() {
+	if (semant_debug)
+		cout << "Entered attribute " << name << endl;
 	if (name == val || name == str_field)
 		return;
 	init->traverse();
@@ -285,9 +295,13 @@ void attr_class::traverse() {
 	if (init->get_type() != No_type && init->get_type() != type_decl) {
 		classtable->semant_error() << "attribute " << name << " has type " << type_decl->get_string() << " while, the expression has type " << init->get_type()->get_string() << std::endl;
 	}
+	if (semant_debug)
+		cout << "Left attribute " << name << endl;
 }
 
 void method_class::traverse() {
+	if (semant_debug)
+		cout << "Entered method " << name << endl;
 	if (name == cool_abort ||
 		name == idtable.add_string("copy") ||
 		name == type_name ||
@@ -315,9 +329,16 @@ void method_class::traverse() {
 		classtable->semant_error() << name << " has return type " << return_type << " while the expression returned has type " << expr->get_type()->get_string() << endl;
 	}	
 	globalSymbolTable.exitscope();
+	if (semant_debug)
+		cout << "Entered method " << name << endl;
 }
 
 void assign_class::traverse() {
+	if (semant_debug)
+		cout << "Entered assignment expression" << endl;
+	
+	expr->traverse();
+	
 	tree_node *v = globalSymbolTable.lookup(name);
 	if (v == NULL) {
 		classtable->semant_error() << name << " is undefined." << endl;		set_type(No_type);		return;
@@ -326,7 +347,7 @@ void assign_class::traverse() {
 	Formal fromFormal = dynamic_cast<Formal>(v);
 	let_class *fromLet = dynamic_cast<let_class*>(v);
 	branch_class *fromCase = dynamic_cast<branch_class*>(v);
-	if (fromAttr == NULL && fromFormal == NULL && fromLet == NULL) {
+	if (fromAttr == NULL && fromFormal == NULL && fromLet == NULL && fromCase == NULL) {
 		classtable->semant_error() << name << " is NOT defined as object." << endl;		set_type(No_type);
 	}
 	
@@ -346,9 +367,13 @@ void assign_class::traverse() {
 	}
 	else
 		set_type(expr->get_type());
+	if (semant_debug)
+		cout << "Left assignment expression" << endl;
 }
 
 void let_class::traverse() {
+	if (semant_debug)
+		cout << "Entered let with identifier = " << identifier << endl;
 	init->traverse();
 	globalSymbolTable.enterscope();
 	Class_ theIdType = dynamic_cast<Class_>(globalSymbolTable.lookup(type_decl));
@@ -360,9 +385,13 @@ void let_class::traverse() {
 	body->traverse();
 	set_type(body->get_type());
 	globalSymbolTable.exitscope();
+	if (semant_debug)
+		cout << "Left let with identifier = " << identifier << endl;
 }
 
 void plus_class::traverse() {
+	if (semant_debug)
+		cout << "Entered +" << endl;
 	e1->traverse();
 	e2->traverse();
 	if (e1->get_type() != Int || e2->get_type() != Int) {
@@ -371,9 +400,13 @@ void plus_class::traverse() {
 	}
 	else
 		set_type(Int);
+	if (semant_debug)
+		cout << "Left +" << endl;
 }
 
 void sub_class::traverse() {
+	if (semant_debug)
+		cout << "Entered -" << endl;
 	e1->traverse();
 	e2->traverse();
 	if (e1->get_type() != Int || e2->get_type() != Int) {
@@ -382,9 +415,13 @@ void sub_class::traverse() {
 	}
 	else
 		set_type(Int);
+	if (semant_debug)
+		cout << "Left -" << endl;
 }
 
 void mul_class::traverse() {
+	if (semant_debug)
+		cout << "Entered *" << endl;
 	e1->traverse();
 	e2->traverse();
 	if (e1->get_type() != Int || e2->get_type() != Int) {
@@ -393,9 +430,13 @@ void mul_class::traverse() {
 	}
 	else
 		set_type(Int);
+	if (semant_debug)
+		cout << "Left *" << endl;
 }
 
 void divide_class::traverse() {
+	if (semant_debug)
+		cout << "Entered /" << endl;
 	e1->traverse();
 	e2->traverse();
 	if (e1->get_type() != Int || e2->get_type() != Int) {
@@ -404,9 +445,13 @@ void divide_class::traverse() {
 	}
 	else
 		set_type(Int);
+	if (semant_debug)
+		cout << "Entered /" << endl;
 }
 
 void comp_class::traverse() {
+	if (semant_debug)
+		cout << "Entered comp" << endl;
 	e1->traverse();
 	if (e1->get_type() != Int) {
 		classtable->semant_error() << "The expression is not an integer and you're trying to get its complement" << endl;
@@ -414,9 +459,13 @@ void comp_class::traverse() {
 	}
 	else
 		set_type(Int);
+	if (semant_debug)
+		cout << "Left comp" << endl;
 }
 
 void lt_class::traverse() {
+	if (semant_debug)
+		cout << "Entered lt" << endl;
 	e1->traverse();
 	e2->traverse();
 	if (e1->get_type() == e2->get_type() && e1->get_type() == Int)
@@ -433,9 +482,13 @@ void lt_class::traverse() {
 		classtable->semant_error() << "They're not of comparable types." << endl;
 		set_type(Bool);
 	}
+	if (semant_debug)
+		cout << "Left lt" << endl;
 }
 
 void leq_class::traverse() {
+	if (semant_debug)
+		cout << "Entered leq" << endl;
 	e1->traverse();
 	e2->traverse();
 	if (e1->get_type() == e2->get_type() && e1->get_type() == Int)
@@ -452,9 +505,13 @@ void leq_class::traverse() {
 		classtable->semant_error() << "They're not of comparable types." << endl;
 		set_type(Bool);
 	}
+	if (semant_debug)
+		cout << "Left leq" << endl;
 }
 
 void eq_class::traverse() {
+	if (semant_debug)
+		cout << "Entered eq" << endl;
 	e1->traverse();
 	e2->traverse();
 	if (e1->get_type() == e2->get_type() && e1->get_type() == Int)
@@ -471,9 +528,13 @@ void eq_class::traverse() {
 		classtable->semant_error() << "They're not of comparable types." << endl;
 		set_type(Bool);
 	}
+	if (semant_debug)
+		cout << "Left eq" << endl;
 }
 
 void neg_class::traverse() {
+	if (semant_debug)
+		cout << "Entered neg" << endl;
 	e1->traverse();
 	if (e1->get_type() != Bool) {
 		classtable->semant_error() << "The expression is not a boolean expression." << endl;
@@ -481,9 +542,13 @@ void neg_class::traverse() {
 	}
 	else
 		set_type(Bool);
+	if (semant_debug)
+		cout << "Left neg" << endl;
 }
 
 void object_class::traverse() {
+	if (semant_debug)
+		cout << "Entered object_class with id = " << name << endl;
 	tree_node *v = globalSymbolTable.lookup(name);
 	if (v == NULL) {
 		classtable->semant_error() << name << " is undefined." << endl;		set_type(No_type);		return;
@@ -503,25 +568,45 @@ void object_class::traverse() {
 		set_type(fromLet->getIdentifierType());
 	else if (fromCase != NULL)
 		set_type(fromCase->getIdentifierType());
+	if (semant_debug)
+		cout << "Left object_class with id = " << name << endl;
 }
 
 void int_const_class::traverse() {
+	if (semant_debug)
+		cout << "Entered int constant" << endl;
 	set_type(Int);
+	if (semant_debug)
+		cout << "Left int constant" << endl;
 }
 
 void string_const_class::traverse() {
+	if (semant_debug)
+		cout << "Entered string constant" << endl;
 	set_type(Str);
+	if (semant_debug)
+		cout << "Left string constant" << endl;
 }
 
 void bool_const_class::traverse() {
+	if (semant_debug)
+		cout << "Entered Bool constant" << endl;
 	set_type(Bool);
+	if (semant_debug)
+		cout << "Left Bool constant" << endl;
 }
 
 void no_expr_class::traverse() {
+	if (semant_debug)
+		cout << "Entered No_expr" << endl;
 	set_type(No_type);
+	if (semant_debug)
+		cout << "Left No_expr" << endl;
 }
 
 void new__class::traverse() {
+	if (semant_debug)
+		cout << "Entered new with class = " << type_name << endl;
 	tree_node *v = globalSymbolTable.lookup(type_name);
 	if (v == NULL){
 		classtable->semant_error() << type_name << " not defined." << std::endl;
@@ -535,9 +620,13 @@ void new__class::traverse() {
 	{
 		set_type(type_name);
 	}
+	if (semant_debug)
+		cout << "Entered new with class = " << type_name << endl;
 }
 
 void cond_class::traverse() {
+	if (semant_debug)
+		cout << "Entered cond" << endl;
 	pred->traverse();
 	globalSymbolTable.enterscope();
 	then_exp->traverse();
@@ -557,9 +646,13 @@ void cond_class::traverse() {
 	}
 	else
 		set_type(then_exp->get_type());
+	if (semant_debug)
+		cout << "Left cond" << endl;
 }
 
 void loop_class::traverse() {
+	if (semant_debug)
+		cout << "Entered loop" << endl;
 	pred->traverse();
 	globalSymbolTable.enterscope();
 	body->traverse();
@@ -570,17 +663,25 @@ void loop_class::traverse() {
 	}
 	else
 		set_type(Object);
+	if (semant_debug)
+		cout << "Left loop" << endl;
 }
 
 void isvoid_class::traverse() {
+	if (semant_debug)
+		cout << "Entered isvoid" << endl;
 	e1->traverse();
 	if (e1->get_type() == No_type)
 		set_type(Bool);
 	else
 		set_type(Bool);
+	if (semant_debug)
+		cout << "Left isvoid" << endl;
 }
 
 void block_class::traverse() {
+	if (semant_debug)
+		cout << "Entered block" << endl;
 	globalSymbolTable.enterscope();
 	Expression lastExpr = NULL;
 	for (int i = body->first(); body->more(i); i = body->next(i)) {
@@ -589,9 +690,13 @@ void block_class::traverse() {
 	}
 	set_type(lastExpr->get_type());
 	globalSymbolTable.exitscope();
+	if (semant_debug)
+		cout << "Left block" << endl;
 }
 
 void static_dispatch_class::traverse() {
+	if (semant_debug)
+		cout << "Entered static dispatch with type = " << type_name << endl;
 
 	expr->traverse();
 	for (int i = actual->first(); actual->more(i); i = actual->next(i))
@@ -637,9 +742,13 @@ void static_dispatch_class::traverse() {
 		classtable->semant_error() << "No method with such parameters' expressions is defined. Method name: " << name << endl;
 		set_type(No_type);
 	}
+	if (semant_debug)
+		cout << "Left static dispatch with type = " << type_name << endl;
 }
 
 void dispatch_class::traverse() {
+	if (semant_debug)
+		cout << "Entered dispatch with methodName = " << name << endl;
 	
 	expr->traverse();
 	for (int i = actual->first(); actual->more(i); i = actual->next(i))
@@ -675,9 +784,13 @@ void dispatch_class::traverse() {
 		classtable->semant_error() << "No method with such parameters' expressions is defined. Method name: " << name->get_string() << endl;
 		set_type(No_type);
 	}
+	if (semant_debug)
+		cout << "Left dispatch with methodName = " << name << endl;
 }
 
 void branch_class::traverse() {
+	if (semant_debug)
+		cout << "Entered branch class with name = " << name << " and type_decl = " << type_decl << endl;
 	globalSymbolTable.enterscope();
 	Class_ t  = dynamic_cast<Class_>(globalSymbolTable.lookup(type_decl));
 	if(t == NULL){
@@ -687,9 +800,13 @@ void branch_class::traverse() {
 		}
 	expr->traverse();
 	globalSymbolTable.exitscope();
+	if (semant_debug)
+		cout << "Left branch class with name = " << name << " and type_decl = " << type_decl << endl;
 }
 
 void typcase_class::traverse(){
+	if (semant_debug)
+		cout << "Entered typcase_class" << endl;
 	expr->traverse();
 	
 	Case last = NULL;
@@ -703,6 +820,8 @@ void typcase_class::traverse(){
 		}
 	}
 	set_type(last->getReturnedExpressionType());
+	if (semant_debug)
+		cout << "Entered typcase_class" << endl;
 }
 
 /*   This is the entry point to the semantic checker.
@@ -720,6 +839,8 @@ void typcase_class::traverse(){
  */
 void program_class::semant()
 {
+	//semant_debug = 1;
+	
     initialize_constants();
 
     /* ClassTable constructor may do some semantic analysis */
