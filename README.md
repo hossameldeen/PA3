@@ -94,12 +94,23 @@ Will make an analogy with the above:
 - boolean_const: Done.
 - self things: Done, something small.
 -------------------
-
+Okay dookie. Let's now try to see the wrong test cases (Whatever I write has worked as expected on our code. If there're notes I'll tell them):
+- Defining same class twice.
+- Defining same attr twice, same fun twice, attr & fun with same name.
+- Same formal twice.
+- assign_expr different types.
+- static_dispatch, dispatch (Will test dispatch only. For static_dispatch, it's a little out of scope because it solves an inheritance-related problem): different No. of parameters, different parameters' type, non-existent function.
+- if: not boolean expr.
+- loop: not boolean expr.
+- block: nothing to test.
+- let: doubt it has a corner test case.
+- branch: different types.
+- isvoid: don't know how to trick.
+- plus, sub, mul, divide: non-integer types on plus. Probably others will be the same.
+- neg: non-int.
+- le, eq, lt: different types, non-comparable types.
+- object: coming from attr, coming from formal, coming from let (these are correct test cases) And if coming from method it objects (as expected).
+- int, string, bool: nothing to test.
+- Just a small test.
 -------------------------------
 May write here last commits changes:
-- Testing mentioned above.
-- Handled SELF_TYPE.
-- Fixed a bug in eq, leq, lt.
-- Fixed something in neg.
-- We'd misunderstood neg & compl. They should be reversed. And that's done.
-- Fixed a bug I'd made in dispatch_class.
